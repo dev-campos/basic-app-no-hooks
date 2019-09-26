@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import "./App.css";
-import Person from "./Person/Person";
+import Cockpit from "../../components/Cockpit/Cockpit"
+import Persons from "../../components/Persons/Persons";
 
 class App extends Component {
   state = {
@@ -22,9 +23,7 @@ class App extends Component {
     show: false
   }
 
-  nameChangedHandler = (id, event) => {
-    console.log(event.target.value);
-    console.log(id);
+  nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
       return p.id === id;
     });
@@ -38,7 +37,7 @@ class App extends Component {
     const pers = [...this.state.persons];
     pers[personIndex] = person;
 
-    this.setState(pers);
+    this.setState({persons: pers});
   };
 
   togglePersonsHandler = () => {
@@ -48,25 +47,21 @@ class App extends Component {
   };
 
   deletePersonHandler = id => {
+    console.log(id);
     const pers = [...this.state.persons].filter(person => {
       return person.id !== id;
     });
-    this.setState(pers)
+    this.setState({persons: pers})
   };
 
   render() {
     let people = null;
 
     if (this.state.show) {
-      people = this.state.persons.map((person, index) => {
-        return (<Person key={person.id} name={person.name} age={person.age} click={this.deletePersonHandler.bind(this, person.id)} changed={this.nameChangedHandler.bind(this, person.id)}/>);
-      });
+      people = <Persons persons={this.state.persons} click={this.deletePersonHandler} changed={this.nameChangedHandler}/>;
     }
     return (<div className="App">
-      <h1>Hi, I'm a React App</h1>
-      <p>This is really working!</p>
-      <button onClick={this.togglePersonsHandler}>Toggle Persons</button>
-      {people}
+      <Cockpit togglePersonsHandler={this.togglePersonsHandler} show={this.state.show}/> {people}
     </div>);
   }
 
